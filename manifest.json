@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Google Search Result Hotkeys",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "content_scripts": [
     {
       "matches": ["https://www.google.com/search*"],

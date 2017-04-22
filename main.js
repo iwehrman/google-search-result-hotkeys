@@ -1,4 +1,4 @@
-window.addEventListener("keypress", function (event) {
+window.addEventListener("keydown", function handleNavigation (event) {
     if (window.document.activeElement !== window.document.body) {
         return;
     }
@@ -20,19 +20,19 @@ window.addEventListener("keypress", function (event) {
         return;
     }
 
+    event.stopPropagation();
+
     const anchor = result.querySelector("a");
     const href = anchor.href;
 
     window.location.href = href;
-});
+}, true);
 
 const emojicationSuffix = "\u{FE0F}\u{20e3} ";
 
 function emojifyResults () {
     const results = document.body.querySelectorAll("h3.r");
     const last = results.length - 1;
-
-    console.log("results", results);
 
     results.forEach((result, index) => {
         if (index === last || index < 9) {
@@ -53,4 +53,3 @@ window.document.onreadystatechange = function () {
         emojifyResults();
     }
 }
-

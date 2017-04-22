@@ -30,6 +30,8 @@ window.addEventListener("keydown", function handleNavigation (event) {
 
 const emojicationSuffix = "\u{FE0F}\u{20e3} ";
 
+const observerConfig = { subtree: true, childList: true };
+
 function emojifyResults () {
     const results = document.body.querySelectorAll("h3.r");
     const last = results.length - 1;
@@ -42,6 +44,20 @@ function emojifyResults () {
             result.insertAdjacentText("afterbegin", emojiDigit);
         }
     });
+
+    const container = document.querySelector("#res");
+    const search = document.querySelector("#search");
+    const observer = new MutationObserver(mutations => {
+        mutations.some(mutation => {
+            if (mutation.type === "childList" && mutation.target === search) {
+                observer.disconnect();
+                emojifyResults();
+                return true;
+            }
+        });
+    });
+
+    observer.observe(container, observerConfig);
 };
 
 if (window.document.readyState === "complete") {

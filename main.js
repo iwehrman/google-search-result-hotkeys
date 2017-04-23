@@ -38,6 +38,10 @@ function emojifyResults () {
 
     results.forEach((result, index) => {
         if (index === last || index < 9) {
+            if (result.textContent.indexOf(emojicationSuffix) > -1) {
+                return;
+            }
+
             const digit = (index === last) ? 0 : index + 1;
             const emojiDigit = String(digit) + emojicationSuffix;
 
@@ -51,7 +55,7 @@ function emojifyResults () {
         mutations.some(mutation => {
             if (mutation.type === "childList" && mutation.target === search) {
                 observer.disconnect();
-                emojifyResults();
+                window.requestAnimationFrame(emojifyResults);
                 return true;
             }
         });

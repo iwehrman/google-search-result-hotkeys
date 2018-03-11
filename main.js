@@ -1,4 +1,4 @@
-window.addEventListener("keydown", function handleNavigation (event) {
+window.addEventListener("keypress", function handleNavigation (event) {
     if (window.document.activeElement !== window.document.body) {
         return;
     }
@@ -25,7 +25,11 @@ window.addEventListener("keydown", function handleNavigation (event) {
     const anchor = result.querySelector("a");
     const href = anchor.href;
 
-    window.location.href = href;
+    if (event.altKey) {
+        window.open(href, "_blank");
+    } else {
+        window.location.href = href;
+    }
 }, true);
 
 const emojicationSuffix = "\u{FE0F}\u{20e3} ";

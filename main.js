@@ -14,7 +14,7 @@ window.addEventListener("keydown", function handleNavigation (event) {
     }
 
     const index = (digit === 0) ? 8 : (digit - 1);
-    const results = document.body.querySelectorAll("h3.r");
+    const results = document.body.querySelectorAll("h3");
     const result = results[index];
     if (!result) {
         return;
@@ -22,7 +22,7 @@ window.addEventListener("keydown", function handleNavigation (event) {
 
     event.stopPropagation();
 
-    const anchor = result.querySelector("a");
+    const anchor = result.closest("a");
     const href = anchor.href;
 
     window.location.href = href;
@@ -33,7 +33,7 @@ const emojicationSuffix = "\u{FE0F}\u{20e3} ";
 const observerConfig = { subtree: true, childList: true };
 
 function emojifyResults () {
-    const results = document.body.querySelectorAll("h3.r");
+    const results = document.body.querySelectorAll("h3");
     const last = results.length - 1;
 
     results.forEach((result, index) => {

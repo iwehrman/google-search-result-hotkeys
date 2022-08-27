@@ -1,3 +1,69 @@
+/**
+ *
+ * @param {(String|String[]|Function)} getter -
+ *      string: selector to return a single element
+ *      string[]: selector to return multiple elements (only the first selector will be taken)
+ *      function: getter(mutationRecords|{})-> Element[]
+ *          a getter function returning an array of elements (the return value will be directly passed back to the promise)
+ *          the function will be passed the `mutationRecords`
+ * @param {Object} opts
+ * @param {Number=0} opts.timeout - timeout in milliseconds, how long to wait before throwing an error (default is 0, meaning no timeout (infinite))
+ * @param {Element=} opts.target - element to be observed
+ *
+ * @returns {Promise<Element>} the value passed will be a single element matching the selector, or whatever the function returned
+ */
+function elementReady(getter, opts = {}) {
+    return new Promise((resolve, reject) => {
+        opts = Object.assign({
+            timeout: 0,
+            target: document.documentElement
+        }, opts);
+        const returnMultipleElements = getter instanceof Array && getter.length === 1;
+        let _timeout;
+        const _getter = typeof getter === 'function' ?
+            (mutationRecords) => {
+                try {
+                    return getter(mutationRecords);
+                } catch (e) {
+                    return false;
+                }
+            } :
+            () => returnMultipleElements ? document.querySelectorAll(getter[0]) : document.querySelector(getter)
+        ;
+        const computeResolveValue = function (mutationRecords) {
+            // see if it already exists
+            const ret = _getter(mutationRecords || {});
+            if (ret && (!returnMultipleElements || ret.length)) {
+                resolve(ret);
+                clearTimeout(_timeout);
+
+                return true;
+            }
+        };
+
+        if (computeResolveValue(_getter())) {
+            return;
+        }
+
+        if (opts.timeout)
+            _timeout = setTimeout(() => {
+                const error = new Error(`elementReady(${getter}) timed out at ${opts.timeout}ms`);
+                reject(error);
+            }, opts.timeout);
+
+
+        new MutationObserver((mutationRecords, observer) => {
+            const completed = computeResolveValue(_getter(mutationRecords));
+            if (completed) {
+                observer.disconnect();
+            }
+        }).observe(opts.target, {
+            childList: true,
+            subtree: true
+        });
+    });
+}
+
 window.addEventListener("keydown", function handleNavigation (event) {
     if (window.document.activeElement !== window.document.body) {
         return;
@@ -22,10 +88,17 @@ window.addEventListener("keydown", function handleNavigation (event) {
 
     event.stopPropagation();
 
-    const anchor = result.closest("a");
+    const anchor = result.closest("a") || result.querySelector("a");
     const href = anchor.href;
 
-    window.location.href = href;
+    // navigate to the result
+    if(event.altKey) {
+        handle = window.open(href, "_blank") // Open a new window using let handle = 
+        handle.blur() // Lose focus of the new window by using 
+        window.focus() // The return focus to your existing window using 
+    } else { 
+        window.location.assign(href);
+    }
 }, true);
 
 const emojicationSuffix = "\u{FE0F}\u{20e3} ";
@@ -39,10 +112,10 @@ function emojifyResults () {
     results.forEach((result, index) => {
         if (index === last || index < 9) {
             if (result.textContent.indexOf(emojicationSuffix) > -1) {
-                return;
+                result.childNodes[0].remove() // remove it and we will put it again
             }
 
-            const digit = (index === last) ? 0 : index + 1;
+            const digit = (index === last && results.length > 1) ? 0 : index + 1;
             const emojiDigit = String(digit) + emojicationSuffix;
 
             result.insertAdjacentText("afterbegin", emojiDigit);
@@ -64,6 +137,7 @@ function emojifyResults () {
     observer.observe(container, observerConfig);
 };
 
+
 if (window.document.readyState === "complete") {
     emojifyResults();
 }
@@ -72,4 +146,11 @@ window.document.onreadystatechange = function () {
     if (document.readyState === "complete") {
         emojifyResults();
     }
+}
+
+// same as above but loop from 1 to 10 instead of the 2
+for (let i = 1; i < 9; i++) {
+    elementReady(() => document.querySelectorAll("h3").length >= i).then((h3s) => {
+        emojifyResults();
+    });
 }

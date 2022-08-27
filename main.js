@@ -92,7 +92,7 @@ window.addEventListener("keydown", function handleNavigation (event) {
     const href = anchor.href;
 
     // navigate to the result
-    if(event.altKey) {
+    if(event.ctrlKey && event.shiftKey) {
         handle = window.open(href, "_blank") // Open a new window using let handle = 
         handle.blur() // Lose focus of the new window by using 
         window.focus() // The return focus to your existing window using 

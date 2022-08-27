@@ -1,13 +1,16 @@
 {
-"update_url": "https://clients2.google.com/service/update2/crx",
-
-    "manifest_version": 2,
+    "update_url": "https://clients2.google.com/service/update2/crx",
+    "manifest_version": 3,
     "name": "Google Search Result Hotkeys",
     "version": "0.1.1",
     "content_scripts": [
         {
-            "matches": [ "*://www.google.com/search*" ],
-            "js": [ "main.js" ],
+            "matches": [
+                "*://www.google.com/search*"
+            ],
+            "js": [
+                "main.js"
+            ],
             "run_at": "document_start"
         }
     ]

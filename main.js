@@ -124,7 +124,7 @@ window.addEventListener("keydown", function handleNavigation (event) {
     }
 
     const index = (digit === 0) ? 8 : (digit - 1);
-    const results = document.body.querySelectorAll("h3");
+    const results = document.body.querySelectorAll("a > h3");
     const result = results[index];
     if (!result) {
         return;

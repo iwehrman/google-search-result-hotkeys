@@ -64,6 +64,50 @@ function elementReady(getter, opts = {}) {
     });
 }
 
+
+function getMenuItems() {
+    const menuItems = document.querySelectorAll('#top_nav .hdtb-mitem a, a[jsname="ONH4Gc"]');
+    let menuItemsObj = {};
+
+    for (const menuItem of menuItems) {
+        menuItemsObj[menuItem.innerText] = menuItem;
+    }
+
+    return menuItemsObj;
+}
+
+window.addEventListener("keydown", function handleNavigation (event) {
+    if (window.document.activeElement !== window.document.body) {
+        return;
+    }
+
+    const keyCode = event.code;
+    if (keyCode.indexOf("Digit") === 0) {
+        return;
+    }
+
+    event.stopPropagation();
+
+    const keyname2category = {
+        "KeyA": "All",
+        "KeyI": "Images",
+        "KeyM": "Maps",
+        "KeyN": "News",
+        "KeyS": "Shopping",
+        "KeyV": "Videos",
+        "KeyB": "Books",
+        "KeyC": "Finance",
+        "KeyF": "Flights",
+        "KeyW": "Weather",
+        "KeyY": "YouTube",
+    };
+    console.log('keyCode', keyCode);
+    const menuItemName = keyname2category[keyCode];
+    console.log('menuItemName', menuItemName);
+    const menuItem = getMenuItems()[menuItemName];
+    menuItem.click();
+}, true);
+
 window.addEventListener("keydown", function handleNavigation (event) {
     if (window.document.activeElement !== window.document.body) {
         return;

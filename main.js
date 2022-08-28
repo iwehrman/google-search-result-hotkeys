@@ -106,7 +106,7 @@ const emojicationSuffix = "\u{FE0F}\u{20e3} ";
 const observerConfig = { subtree: true, childList: true };
 
 function emojifyResults () {
-    const results = document.body.querySelectorAll("h3");
+    const results = document.body.querySelectorAll("a > h3");
     const last = results.length - 1;
 
     results.forEach((result, index) => {
@@ -122,7 +122,9 @@ function emojifyResults () {
         }
     });
 
+    // add listener for next time
     const container = document.querySelector("#res");
+    if (!container) return;
     const search = document.querySelector("#search");
     const observer = new MutationObserver(mutations => {
         mutations.some(mutation => {
@@ -133,7 +135,6 @@ function emojifyResults () {
             }
         });
     });
-
     observer.observe(container, observerConfig);
 };
 

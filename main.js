@@ -101,9 +101,7 @@ window.addEventListener("keydown", function handleNavigation (event) {
         "KeyW": "Weather",
         "KeyY": "YouTube",
     };
-    console.log('keyCode', keyCode);
     const menuItemName = keyname2category[keyCode];
-    console.log('menuItemName', menuItemName);
     const menuItem = getMenuItems()[menuItemName];
     menuItem.click();
 }, true);

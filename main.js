@@ -130,24 +130,28 @@ window.addEventListener("keydown", function handleNavigation (event) {
 
     event.stopPropagation();
 
+    clickResult(result, event.ctrlKey && event.shiftKey);
+}, true);
+
+function clickResult(result, isNewTab) {
     const anchor = result.closest("a") || result.querySelector("a");
     const href = anchor.href;
 
     // navigate to the result
-    if(event.ctrlKey && event.shiftKey) {
-        handle = window.open(href, "_blank") // Open a new window using let handle = 
-        handle.blur() // Lose focus of the new window by using 
-        window.focus() // The return focus to your existing window using 
-    } else { 
+    if (isNewTab) {
+        handle = window.open(href, "_blank"); // Open a new window using let handle = 
+        handle.blur(); // Lose focus of the new window by using 
+        window.focus(); // The return focus to your existing window using 
+    } else {
         window.location.assign(href);
     }
-}, true);
+}
 
 const emojicationSuffix = "\u{FE0F}\u{20e3} ";
 
 const observerConfig = { subtree: true, childList: true };
 
-function emojifyResults () {
+function emojifyResults() {
     const results = document.body.querySelectorAll("a > h3");
     const last = results.length - 1;
 
@@ -180,13 +184,28 @@ function emojifyResults () {
     observer.observe(container, observerConfig);
 };
 
+// click on the item which is found in the searchparam key "click"
+// this is useful for creating a shotrcut for google search like "https://www.google.com/search?q=%s&click=1"
+function pressResultFromUrl() {
+    const searchParams = new URLSearchParams(window.location.search);
+    const nth_target_item = Number(searchParams.get("click"));
+    if (!nth_target_item) return;
+
+    const results = document.body.querySelectorAll("a > h3");
+    const result = results[nth_target_item - 1];
+    if (!result) return;
+
+    clickResult(result, false);
+}
 
 if (window.document.readyState === "complete") {
+    pressResultFromUrl();
     emojifyResults();
 }
 
 window.document.onreadystatechange = function () {
     if (document.readyState === "complete") {
+        pressResultFromUrl();
         emojifyResults();
     }
 }
@@ -194,6 +213,7 @@ window.document.onreadystatechange = function () {
 // same as above but loop from 1 to 10 instead of the 2
 for (let i = 1; i < 9; i++) {
     elementReady(() => document.querySelectorAll("h3").length >= i).then((h3s) => {
+        pressResultFromUrl();
         emojifyResults();
     });
 }

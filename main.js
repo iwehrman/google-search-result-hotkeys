@@ -101,9 +101,13 @@ window.addEventListener("keydown", function handleNavigation (event) {
         "KeyW": "Weather",
         "KeyY": "YouTube",
     };
-    const menuItemName = keyname2category[keyCode];
-    const menuItem = getMenuItems()[menuItemName];
-    menuItem.click();
+    if (event.altKey && keyname2category[keyCode]) {
+        const menuItemName = keyname2category[keyCode];
+        const menuItem = getMenuItems()[menuItemName];
+        if (menuItem) {
+            menuItem.click();
+        }
+    }
 }, true);
 
 window.addEventListener("keydown", function handleNavigation (event) {
@@ -130,7 +134,9 @@ window.addEventListener("keydown", function handleNavigation (event) {
 
     event.stopPropagation();
 
-    clickResult(result, event.ctrlKey && event.shiftKey);
+    if (event.altKey === true) {
+        clickResult(result, event.ctrlKey);
+    }
 }, true);
 
 function clickResult(result, isNewTab) {
@@ -138,7 +144,7 @@ function clickResult(result, isNewTab) {
     const href = anchor.href;
 
     // navigate to the result
-    if (isNewTab) {
+    if (isNewTab === true) {
         handle = window.open(href, "_blank"); // Open a new window using let handle = 
         handle.blur(); // Lose focus of the new window by using 
         window.focus(); // The return focus to your existing window using 

@@ -134,9 +134,7 @@ window.addEventListener("keydown", function handleNavigation (event) {
 
     event.stopPropagation();
 
-    if (event.altKey === true) {
-        clickResult(result, event.ctrlKey);
-    }
+    clickResult(result, event.ctrlKey);
 }, true);
 
 function clickResult(result, isNewTab) {

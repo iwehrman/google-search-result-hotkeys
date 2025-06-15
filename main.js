@@ -13,8 +13,9 @@ window.addEventListener("keydown", function handleNavigation (event) {
         return;
     }
 
-    const index = (digit === 0) ? 8 : (digit - 1);
     const results = document.body.querySelectorAll("h3");
+    const last = results.length - 1;
+    const index = (digit === 0) ? last : (digit - 1);
     const result = results[index];
     if (!result) {
         return;
@@ -23,6 +24,9 @@ window.addEventListener("keydown", function handleNavigation (event) {
     event.stopPropagation();
 
     const anchor = result.closest("a");
+    if (!anchor) {
+        return;
+    }
     const href = anchor.href;
 
     window.location.href = href;
